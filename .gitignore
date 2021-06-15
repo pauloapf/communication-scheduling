@@ -1,3 +1,20 @@
+# Ignore target at the top level
+/target/
+# Ignore child project's targets as well
+/*/target/
+# And any grandchildren ...
+/*/*/target/
+*/target
+bin/
+
+.apt_generated
+.factorypath
+.project
+.settings
+.springBeans
+target/
+release.properties
+
 # Compiled class file
 *.class
 

@@ -1,0 +1,282 @@
+swagger: '2.0'
+info:
+  title: Agendamento de Comunicação
+  version: '1.0'
+  description: |
+        Serviço responsável por agendar, consultar e deletar o envio de uma comuncação por email, sms, push ou whatsapp
+        
+host: localhost
+schemes:
+  - http
+paths:
+  '/communication/':
+    post:
+      tags:
+        - "Agendamento de Comunicação"
+      summary: Cria agendamento de comunicação
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      description: Responsável por criar um novo agendamento de comunicação
+      parameters:
+        - in: header
+          name: X-Correlation-ID
+          description: Transaction ID
+          type: string
+          required: false
+        - in: body
+          name: body
+          description: Request Body
+          required: true
+          schema:
+            $ref: '#/definitions/SchedulingCreationRequest'
+      responses:
+        '201':
+          description: Sucesso
+          schema:
+            $ref: '#/definitions/SchedulingCreationResponse'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '500':
+          description: Erro Interno
+          schema:
+            $ref: '#/definitions/ResponseError'            
+  '/communication/{id}':
+    get:
+      tags:
+        - "Agendamento de Comunicação"
+      summary: Consulta agendamento por id
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      description: Responsável por consultar o agendamento através do id
+      parameters:
+        - in: header
+          name: X-Correlation-ID
+          description: Transaction ID
+          type: string
+          required: false
+        - in: path
+          name: id
+          description: ID do agendamento
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Sucesso
+          schema:
+            $ref: '#/definitions/SchedulingStatusResponse'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '500':
+          description: Erro Interno
+          schema:
+            $ref: '#/definitions/ResponseError'
+    delete:
+      tags:
+        - "Agendamento de Comunicação"
+      summary: Cancela agendamento por id
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      description: 'Responsável por cancelar o agendamento através do id. Observação: agendamento só é cancelado caso não tenha sido enviado ainda'
+      parameters:
+        - in: header
+          name: X-Correlation-ID
+          description: Transaction ID
+          type: string
+          required: false
+        - in: path
+          name: id
+          description: ID do agendamento
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Sucesso
+          schema:
+            $ref: '#/definitions/SchedulingDeleteResponse'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ResponseError'
+        '500':
+          description: Erro Interno
+          schema:
+            $ref: '#/definitions/ResponseError'
+definitions:
+  SchedulingCreationRequest:
+    type: object
+    required:
+        - scheduleDate
+        - sendType
+        - status
+        - message
+    properties:
+      scheduleDate:
+        type: string
+        description: Data e hora que deve ser feito envio da comunicação - Deve superior a data de hoje. Formato YYYY-MM-DD'T'HH
+        example: "2021-06-13T17"
+      phoneNumber:
+        type: string
+        description: Número de telefone que irá receber a comunicação. Deve ser composto por 11 digitos incluindo o DDD. Obrigatório apenas para sendType 1, 2 e 3
+        example: "11999999999"
+      email:
+        type: string
+        description: Email que irá receber a comunicação. Obrigatório apenas para sendType 4
+        example: "xx@yy.com"
+      sendType:
+        type: string
+        description: 'Forma de envio: 1- Email, 2-SMS, 3-Push e 4-WhatsApp'
+        example: "1"
+        enum:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+      message:
+        type: string
+        description: Mensagem que será enviada
+        example: "Mensagem de Agendamento de Comunicação"
+  SchedulingCreationResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Identificador único do agendamento
+        example: "15001"
+      scheduleDate:
+        type: string
+        description: Data e hora que deve ser feito envio da comunicação. Formato YYYY-MM-DD'T'HH
+        example: "2021-06-13T17"
+      phoneNumber:
+        type: string
+        description: Número de telefone que irá receber a comunicação. Usado quadno sendType é 1, 2 ou 3
+        example: "11999999999"
+      email:
+        type: string
+        description: Email que irá receber a comunicação. Usado quadno sendType é 4
+        example: "xx@yy.com"
+      sendType:
+        type: string
+        description: 'Forma de envio: 1- Email, 2-SMS, 3-Push e 4-WhatsApp'
+        example: "1"
+      message:
+        type: string
+        description: Mensagem que será enviada
+        example: "Mensagem de Agendamento de Comunicação"
+  SchedulingStatusResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Identificador único do agendamento
+        example: "15001"
+      scheduleDate:
+        type: string
+        description: Data e hora do agendamento do envio da comunicação. Formato YYYY-MM-DD'T'HH
+        example: "2021-06-13T17"
+      phoneNumber:
+        type: string
+        description: Número de telefone que irá receber a comunicação. Usado quadno sendType é 1, 2 ou 3
+        example: "11999999999"
+      email:
+        type: string
+        description: Email que irá receber a comunicação. Usado quadno sendType é 4
+        example: "xx@yy.com"
+      sendType:
+        type: string
+        description: 'Forma de envio: 1- Email, 2-SMS, 3-Push e 4-WhatsApp'
+        example: "1"
+      message:
+        type: string
+        description: Mensagem de envio
+        example: "Mensagem de Agendamento de Comunicação"
+      status:
+        type: string
+        description: Status da comunicação. 1-Agendado, 2-Enviado com Sucesso, 3-Falha no envio
+        example: "1"
+      statusDescription:
+        type: string
+        description: Descrição do status do envio
+        example: "Enviado com sucesso"
+  SchedulingDeleteResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Identificador único do agendamento
+        example: "15001"
+      scheduleDate:
+        type: string
+        description: Data e hora do agendamento do envio da comunicação. Formato YYYY-MM-DD'T'HH
+        example: "2021-06-13T17"
+      phoneNumber:
+        type: string
+        description: Número de telefone que irá receber a comunicação. Usado quadno sendType é 1, 2 ou 3
+        example: "11999999999"
+      email:
+        type: string
+        description: Email que irá receber a comunicação. Usado quadno sendType é 4
+        example: "xx@yy.com"
+      sendType:
+        type: string
+        description: 'Forma de envio: 1- Email, 2-SMS, 3-Push e 4-WhatsApp'
+        example: "1"
+      message:
+        type: string
+        description: Mensagem de envio
+        example: "Mensagem de Agendamento de Comunicação"
+      status:
+        type: string
+        description: Status da comunicação. 1-Agendado, 2-Enviado com Sucesso, 3-Falha no envio
+        example: "1"
+      statusDescription:
+        type: string
+        description: Descrição do status do envio
+        example: "Enviado com sucesso"
+  ResponseError:
+    type: object
+    properties:
+      timestamp:
+        type: integer
+        format: int64
+        description: Timestamp
+      status:
+        type: integer
+        description: Código HTTP retornados
+      error:
+        type: string
+        description: Descrição do tipo do erro
+      exception:
+        type: string
+        description: Tipo da exceção
+      errors:
+        type: array
+        items:
+          type: object
+      path:
+        type: string
+        description: Path chamado
+      internalCode:
+        type: string
+        description: Codigo interno detalhado do erro
