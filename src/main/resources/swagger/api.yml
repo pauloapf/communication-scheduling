@@ -63,7 +63,7 @@ paths:
         - in: path
           name: id
           description: ID do agendamento
-          type: string
+          type: integer
           required: true
       responses:
         '200':
@@ -100,7 +100,7 @@ paths:
         - in: path
           name: id
           description: ID do agendamento
-          type: string
+          type: integer
           required: true
       responses:
         '200':
@@ -163,7 +163,7 @@ definitions:
       id:
         type: integer
         description: Identificador único do agendamento
-        example: "15001"
+        example: 15001
       scheduleDate:
         type: string
         description: Data e hora que deve ser feito envio da comunicação. Formato YYYY-MM-DD'T'HH
@@ -184,13 +184,25 @@ definitions:
         type: string
         description: Mensagem que será enviada
         example: "Mensagem de Agendamento de Comunicação"
+      status:
+        type: string
+        description: Status da comunicação. 1-Agendado, 2-Enviado com Sucesso, 3-Falha no envio
+        example: "1"
+        enum:
+          - '1'
+          - '2'
+          - '3'
+      statusDescription:
+        type: string
+        description: Descrição do status do envio
+        example: "Enviado com sucesso"
   SchedulingStatusResponse:
     type: object
     properties:
       id:
         type: integer
         description: Identificador único do agendamento
-        example: "15001"
+        example: 15001
       scheduleDate:
         type: string
         description: Data e hora do agendamento do envio da comunicação. Formato YYYY-MM-DD'T'HH
@@ -215,6 +227,10 @@ definitions:
         type: string
         description: Status da comunicação. 1-Agendado, 2-Enviado com Sucesso, 3-Falha no envio
         example: "1"
+        enum:
+          - '1'
+          - '2'
+          - '3'
       statusDescription:
         type: string
         description: Descrição do status do envio
@@ -225,7 +241,7 @@ definitions:
       id:
         type: integer
         description: Identificador único do agendamento
-        example: "15001"
+        example: 15001
       scheduleDate:
         type: string
         description: Data e hora do agendamento do envio da comunicação. Formato YYYY-MM-DD'T'HH

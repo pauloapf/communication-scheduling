@@ -26,7 +26,9 @@ public class CommunicationScheduling implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
+    public static final String STATUS_DESCRIPTION_AGENDADO = "Agendado";
     
+    public static final String STATUS_AGENDADO = "1";
     
     public CommunicationScheduling(LocalDateTime creationDate, LocalDateTime scheduleDate, String phoneNumber,
 			String email, String sendType, String message, String status, String statusDescription) {

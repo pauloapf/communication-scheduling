@@ -21,7 +21,7 @@ import com.desafio.scheduling.communication.dao.mock.DatabaseMockAutoConfigurati
 import com.desafio.scheduling.communication.exception.NotFoundIdException;
 
 @SpringBootTest(classes = SpringBootH2Application.class)
-@ImportAutoConfiguration(classes = { DatabaseMockAutoConfiguration.class})
+@ImportAutoConfiguration(classes = { })
 public class CommunicationSchedulingDaoImplTest {
 
 	@Autowired

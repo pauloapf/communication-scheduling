@@ -16,11 +16,13 @@ public class BusinessException extends RuntimeException {
 	public BusinessException(String internalCode, HttpStatus status, String message, Throwable cause) {
 		super(message, cause);
 		this.internalCode = internalCode;
+		this.status = status;
 	}
 
 	public BusinessException(String internalCode, HttpStatus status, String message) {
 		super(message);
 		this.internalCode = internalCode;
+		this.status = status;
 	}
 
 }

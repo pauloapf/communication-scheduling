@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-06-13T09:26:11.237-03:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-06-16T08:09:21.394-03:00")
 
 @Api(value = "communication", description = "the communication API")
 public interface CommunicationApi {
@@ -43,7 +43,7 @@ public interface CommunicationApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.DELETE)
-    default ResponseEntity<SchedulingDeleteResponse> communicationIdDelete(@ApiParam(value = "ID do agendamento",required=true) @PathVariable("id") String id,@ApiParam(value = "Transaction ID" ) @RequestHeader(value="X-Correlation-ID", required=false) String xCorrelationID) {
+    default ResponseEntity<SchedulingDeleteResponse> communicationIdDelete(@ApiParam(value = "ID do agendamento",required=true) @PathVariable("id") Integer id,@ApiParam(value = "Transaction ID" ) @RequestHeader(value="X-Correlation-ID", required=false) String xCorrelationID) {
         return getDelegate().communicationIdDelete(id, xCorrelationID);
     }
 
@@ -58,7 +58,7 @@ public interface CommunicationApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.GET)
-    default ResponseEntity<SchedulingStatusResponse> communicationIdGet(@ApiParam(value = "ID do agendamento",required=true) @PathVariable("id") String id,@ApiParam(value = "Transaction ID" ) @RequestHeader(value="X-Correlation-ID", required=false) String xCorrelationID) {
+    default ResponseEntity<SchedulingStatusResponse> communicationIdGet(@ApiParam(value = "ID do agendamento",required=true) @PathVariable("id") Integer id,@ApiParam(value = "Transaction ID" ) @RequestHeader(value="X-Correlation-ID", required=false) String xCorrelationID) {
         return getDelegate().communicationIdGet(id, xCorrelationID);
     }
 
