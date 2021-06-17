@@ -75,7 +75,8 @@ public class CommunicationSchedulingServiceImplTest {
 				communicationSchedulingRules);
 		communicationSchedulingService = new CommunicationSchedulingServiceImpl(
 				communicationSchedulingBuilder,
-				communicationSchedulingDao);
+				communicationSchedulingDao,
+				communicationSchedulingRules);
 		scheduleDateTime = LocalDate.now().plusDays(1).atTime(23, 59);
 		validScheduleDate = communicationSchedulingUtil.localDateTimeToApi(scheduleDateTime);
 		currentDate = LocalDate.now();
@@ -150,6 +151,8 @@ public class CommunicationSchedulingServiceImplTest {
 	public void deleteCommunicationScheduling() throws NotFoundIdException {
 		Long id = 1L;
 
+		Mockito.when(communicationSchedulingDao.getById(id))
+			.thenReturn(commonCommunicationScheduling());
 		doNothing().when(communicationSchedulingDao).deleteById(id);
 
 		ResponseEntity<Void> resp = communicationSchedulingService.delete(id.intValue(), "xCorrelationID");
@@ -163,11 +166,27 @@ public class CommunicationSchedulingServiceImplTest {
 	public void deleteCommunicationSchedulingNotExists() throws NotFoundIdException {
 		Long id = 1L;
 		
+		Mockito.when(communicationSchedulingDao.getById(id))
+		.thenReturn(commonCommunicationScheduling());
 		doThrow(NotFoundIdException.class).when(communicationSchedulingDao).deleteById(id);
 		
 		BusinessException be = assertThrows(BusinessException.class,()->communicationSchedulingService.delete(id.intValue(), "xCorrelationID"));
 		assertEquals(ResponseCodeValues.ID_NOT_FOUND, be.getInternalCode());
 		assertEquals(HttpStatus.NOT_FOUND, be.getStatus());
+		
+	}
+	
+	@DisplayName("Try deleting a scheduling communication but it has already sent")
+	@Test
+	public void deleteCommunicationSchedulingForbidden() throws NotFoundIdException {
+		Long id = 1L;
+		
+		Mockito.when(communicationSchedulingDao.getById(id))
+		.thenReturn(commonCommunicationScheduling(CommunicationScheduling.STATUS_ENVIADO));
+		
+		BusinessException be = assertThrows(BusinessException.class,()->communicationSchedulingService.delete(id.intValue(), "xCorrelationID"));
+		assertEquals(ResponseCodeValues.DELETE_UNAVAILABLE_DUE_TO_DATE_OR_STATUS, be.getInternalCode());
+		assertEquals(HttpStatus.FORBIDDEN, be.getStatus());
 		
 	}
 	
@@ -186,6 +205,10 @@ public class CommunicationSchedulingServiceImplTest {
 	}
 
 	private Optional<CommunicationScheduling> commonCommunicationScheduling() {
+		return commonCommunicationScheduling(CommunicationScheduling.STATUS_AGENDADO);
+	}
+
+	private Optional<CommunicationScheduling> commonCommunicationScheduling(String status) {
 		CommunicationScheduling resp = new CommunicationScheduling();
 		resp.setEmail(EMAIL);
 		resp.setMessage(MESSAGE);
@@ -193,7 +216,7 @@ public class CommunicationSchedulingServiceImplTest {
 		resp.setScheduleDate(scheduleDateTime);
 		resp.setSendType(SEND_TYPE_1);
 		resp.setCreationDate(currentLocalDateTime);
-		resp.setStatus(CommunicationScheduling.STATUS_AGENDADO);
+		resp.setStatus(status);
 		resp.setStatusDescription(CommunicationScheduling.STATUS_DESCRIPTION_AGENDADO);
 		resp.setId(1L);
 		return Optional.of(resp);

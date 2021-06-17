@@ -29,6 +29,8 @@ public class CommunicationSchedulingBuilder {
 		
 		log.debug("Building CommunicationScheduling for creating");
 		
+		communicationSchedulingRules.isValidSendType(request.getSendType());
+		
 		communicationSchedulingRules.validateRecipientForSendType(request.getPhoneNumber(), request.getEmail(), request.getSendType());
 		
 		CommunicationScheduling communicationScheduling = new CommunicationScheduling(

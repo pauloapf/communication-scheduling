@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.desafio.scheduling.communication.model.SchedulingCreationRequest;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +31,8 @@ public class CommunicationScheduling implements Serializable {
     public static final String STATUS_DESCRIPTION_AGENDADO = "Agendado";
     
     public static final String STATUS_AGENDADO = "1";
+
+	public static final String STATUS_ENVIADO = "2";
     
     public CommunicationScheduling(LocalDateTime creationDate, LocalDateTime scheduleDate, String phoneNumber,
 			String email, String sendType, String message, String status, String statusDescription) {

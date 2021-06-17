@@ -1,6 +1,8 @@
 package com.desafio.scheduling.communication.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
@@ -90,7 +93,7 @@ public class CommunicationSchedulingRulesTest {
 
 	@ParameterizedTest(name="Invalidando sendType {0}")
 	@ValueSource(strings = {"1","2","3","4"})
-	public void invalidSendType(String sendType) {
+	public void invalidSendTypeForRecipient(String sendType) {
 		
 		final String phoneNumber = "11";
 		final String email = "xx";
@@ -104,6 +107,25 @@ public class CommunicationSchedulingRulesTest {
 			assertEquals(ResponseCodeValues.PHONE_MANDATORY, be.getInternalCode());
 		}
 		assertEquals(HttpStatus.BAD_REQUEST, be.getStatus());
+	}
+	
+	@Test
+	public void invalidSendType() {
+		
+		BusinessException be = assertThrows(BusinessException.class,()->communicationSchedulingRules.isValidSendType("5"));
+		assertEquals(ResponseCodeValues.SEND_TYPE_INVALID, be.getInternalCode());
+		assertEquals(HttpStatus.BAD_REQUEST, be.getStatus());
 	}	
+	
+	@ParameterizedTest(name="Validando se pode cancelar assinatura para qtd dias <{0}> em relacao a data atual  e status {1}")
+	@CsvSource({"-1,1","0, 1","1, 1","-1,2","0,2","1,2" }) 
+	public void validateDeleteIfNotScheduled(long dia, long status) {
+		boolean result = communicationSchedulingRules.isCommunicationAvailableToBeDeleted(LocalDateTime.now().plusDays(dia), String.valueOf(status));
+		if(dia<1 || !"1".equals(String.valueOf(status))) {
+			assertFalse(result);
+		}else {
+			assertTrue(result);
+		}
+	}
 
 }

@@ -3,6 +3,7 @@ package com.desafio.scheduling.communication.business;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,8 +13,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.desafio.scheduling.communication.api.response.ResponseCodeValues;
+import com.desafio.scheduling.communication.dao.domain.CommunicationScheduling;
 import com.desafio.scheduling.communication.exception.BusinessException;
 import com.desafio.scheduling.communication.model.SendTypeEnum;
+import com.desafio.scheduling.communication.model.StatusCommunicationEnum;
 import com.desafio.scheduling.communication.util.Util;
 
 import lombok.extern.slf4j.Slf4j;
@@ -55,5 +58,21 @@ public class CommunicationSchedulingRules {
 	
 	public String getScheduleLocalDateTimeToString(LocalDateTime scheduleDate){
 		return communicationSchedulingUtil.localDateTimeToApi(scheduleDate);		
+	}
+
+	/**
+	 * Data 
+	 * @param scheduleDate
+	 * @return
+	 */
+	public boolean isCommunicationAvailableToBeDeleted(LocalDateTime scheduleDate, String status) {
+		return scheduleDate.isAfter(LocalDate.now().plusDays(1).atStartOfDay()) && StatusCommunicationEnum.AGENDADO.toString().equals(status);
+	}
+
+	public void isValidSendType(@NotNull String sendType) {
+		if(null==SendTypeEnum.fromValue(sendType)) {
+			throw new BusinessException(ResponseCodeValues.SEND_TYPE_INVALID, HttpStatus.BAD_REQUEST, "Send Type deve estar contido em valores de 1 a 4");
+		}
+		
 	}
 }

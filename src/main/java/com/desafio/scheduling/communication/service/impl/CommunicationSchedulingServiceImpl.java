@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.desafio.scheduling.communication.api.response.ResponseCodeValues;
 import com.desafio.scheduling.communication.business.CommunicationSchedulingBuilder;
+import com.desafio.scheduling.communication.business.CommunicationSchedulingRules;
 import com.desafio.scheduling.communication.dao.CommunicationSchedulingDao;
 import com.desafio.scheduling.communication.dao.domain.CommunicationScheduling;
 import com.desafio.scheduling.communication.exception.BusinessException;
@@ -24,16 +25,20 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class CommunicationSchedulingServiceImpl implements CommunicationSchedulingService{
 
+	private CommunicationSchedulingRules communicationSchedulingRules;
+	
 	private CommunicationSchedulingBuilder communicationSchedulingBuilder;
 	
 	private CommunicationSchedulingDao communicationSchedulingDao;
 	
 	public CommunicationSchedulingServiceImpl(
 			@Autowired CommunicationSchedulingBuilder communicationSchedulingBuilder,
-			@Autowired CommunicationSchedulingDao communicationSchedulingDao
+			@Autowired CommunicationSchedulingDao communicationSchedulingDao,
+			@Autowired CommunicationSchedulingRules communicationSchedulingRules
 			) {
 		this.communicationSchedulingBuilder = communicationSchedulingBuilder;
 		this.communicationSchedulingDao = communicationSchedulingDao;
+		this.communicationSchedulingRules = communicationSchedulingRules;
 	}
 	
 	public ResponseEntity<SchedulingCreationResponse> create(SchedulingCreationRequest request, String xCorrelationID) {
@@ -43,13 +48,23 @@ public class CommunicationSchedulingServiceImpl implements CommunicationScheduli
 		
         return new ResponseEntity<>(communicationSchedulingBuilder.buildSchedulingCreationResponse(
         		communicationScheduling), HttpStatus.CREATED);
-
 	}
 	
 	@Override
 	public ResponseEntity<Void> delete(Integer id, String xCorrelationID) {
 		try {
-			communicationSchedulingDao.deleteById(Long.valueOf(id));
+			Optional<CommunicationScheduling> communicationScheduling = communicationSchedulingDao.getById(Long.valueOf(id));
+			if(communicationScheduling.isPresent()) {
+				if(communicationSchedulingRules.isCommunicationAvailableToBeDeleted(
+						communicationScheduling.get().getScheduleDate(),
+						communicationScheduling.get().getStatus())){
+					communicationSchedulingDao.deleteById(Long.valueOf(id));
+				}else {
+					throw new BusinessException(ResponseCodeValues.DELETE_UNAVAILABLE_DUE_TO_DATE_OR_STATUS, HttpStatus.FORBIDDEN, "Data de agendamento é menor ou igual a data de hoje ou status diferente de 1 - agendado");
+				}
+			}else {
+				throw new BusinessException(ResponseCodeValues.ID_NOT_FOUND, HttpStatus.NOT_FOUND, "Nenhum agendamento encontrado");
+			}
 		} catch (NotFoundIdException e) {
 			log.info("Nenhum agendamento encontrado para o id {}", id);
 			throw new BusinessException(ResponseCodeValues.ID_NOT_FOUND, HttpStatus.NOT_FOUND, "Nenhum agendamento encontrado");
