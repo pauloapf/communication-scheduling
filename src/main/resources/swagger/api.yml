@@ -105,8 +105,6 @@ paths:
       responses:
         '200':
           description: Sucesso
-          schema:
-            $ref: '#/definitions/SchedulingDeleteResponse'
         '400':
           description: Bad Request
           schema:
@@ -231,41 +229,6 @@ definitions:
           - '1'
           - '2'
           - '3'
-      statusDescription:
-        type: string
-        description: Descrição do status do envio
-        example: "Enviado com sucesso"
-  SchedulingDeleteResponse:
-    type: object
-    properties:
-      id:
-        type: integer
-        description: Identificador único do agendamento
-        example: 15001
-      scheduleDate:
-        type: string
-        description: Data e hora do agendamento do envio da comunicação. Formato YYYY-MM-DD'T'HH
-        example: "2021-06-13T17"
-      phoneNumber:
-        type: string
-        description: Número de telefone que irá receber a comunicação. Usado quadno sendType é 1, 2 ou 3
-        example: "11999999999"
-      email:
-        type: string
-        description: Email que irá receber a comunicação. Usado quadno sendType é 4
-        example: "xx@yy.com"
-      sendType:
-        type: string
-        description: 'Forma de envio: 1- Email, 2-SMS, 3-Push e 4-WhatsApp'
-        example: "1"
-      message:
-        type: string
-        description: Mensagem de envio
-        example: "Mensagem de Agendamento de Comunicação"
-      status:
-        type: string
-        description: Status da comunicação. 1-Agendado, 2-Enviado com Sucesso, 3-Falha no envio
-        example: "1"
       statusDescription:
         type: string
         description: Descrição do status do envio

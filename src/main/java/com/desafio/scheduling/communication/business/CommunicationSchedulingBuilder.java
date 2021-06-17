@@ -69,7 +69,7 @@ public class CommunicationSchedulingBuilder {
 		response.setPhoneNumber(communicationScheduling.getPhoneNumber());
 		response.setScheduleDate(communicationSchedulingRules.getScheduleLocalDateTimeToString(communicationScheduling.getScheduleDate()));
 		response.setSendType(communicationScheduling.getSendType());
-		response.setStatus(SchedulingStatusResponse.StatusEnum.valueOf(communicationScheduling.getStatus()));
+		response.setStatus(SchedulingStatusResponse.StatusEnum.fromValue(communicationScheduling.getStatus()));
 		response.setStatusDescription(communicationScheduling.getStatusDescription());
 		return response;
 	}

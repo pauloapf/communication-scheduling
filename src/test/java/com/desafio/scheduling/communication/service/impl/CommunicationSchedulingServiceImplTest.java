@@ -1,10 +1,19 @@
 package com.desafio.scheduling.communication.service.impl;
 
-import java.time.LocalDate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -16,21 +25,24 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.desafio.scheduling.communication.api.response.ResponseCodeValues;
 import com.desafio.scheduling.communication.business.CommunicationSchedulingBuilder;
 import com.desafio.scheduling.communication.business.CommunicationSchedulingRules;
 import com.desafio.scheduling.communication.dao.CommunicationSchedulingDao;
 import com.desafio.scheduling.communication.dao.domain.CommunicationScheduling;
+import com.desafio.scheduling.communication.exception.BusinessException;
+import com.desafio.scheduling.communication.exception.NotFoundIdException;
 import com.desafio.scheduling.communication.model.SchedulingCreationRequest;
-import com.desafio.scheduling.communication.model.SchedulingCreationResponse;
 import com.desafio.scheduling.communication.model.SchedulingCreationRequest.SendTypeEnum;
+import com.desafio.scheduling.communication.model.SchedulingCreationResponse;
+import com.desafio.scheduling.communication.model.SchedulingStatusResponse;
 import com.desafio.scheduling.communication.service.CommunicationSchedulingService;
 import com.desafio.scheduling.communication.util.Util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.argThat;
-
 @TestInstance(Lifecycle.PER_CLASS)
 public class CommunicationSchedulingServiceImplTest {
+
+	private static final String SEND_TYPE_1 = "1";
 
 	private static final String PHONE_NUMBER = "phoneNumber";
 
@@ -70,11 +82,15 @@ public class CommunicationSchedulingServiceImplTest {
 		currentLocalDateTime = LocalDateTime.now();
 	}
 	
+	@BeforeEach
+	public void beforeEach() {
+		Mockito.reset(communicationSchedulingDao);
+	}
+	
 	@DisplayName("Create a scheduling communication")
 	@Test
-	public void createCommunicationSchedulingUsingEmailSendType() {
+	public void createCommunicationScheduling() {
 		SchedulingCreationRequest request = commonSchedulingCreationRequest();
-		
 		Mockito.when(communicationSchedulingDao.create(
 				argThat(new CommunicationSchedulingAllArgMatcher(request))))
 		.thenReturn(commonCommunicationScheduling(request));
@@ -92,6 +108,69 @@ public class CommunicationSchedulingServiceImplTest {
 		assertEquals(CommunicationScheduling.STATUS_DESCRIPTION_AGENDADO, resp.getBody().getStatusDescription());
 	}
 	
+	@DisplayName("Get a scheduling communication")
+	@Test
+	public void getCommunicationScheduling() {
+		Long id = 1L;
+		
+		Mockito.when(communicationSchedulingDao.getById(id))
+		.thenReturn(commonCommunicationScheduling());
+		
+		ResponseEntity<SchedulingStatusResponse> resp = communicationSchedulingService.get(String.valueOf(id), "xCorrelationID");
+		
+		assertEquals(HttpStatus.OK, resp.getStatusCode());
+		assertEquals(EMAIL, resp.getBody().getEmail());
+		assertEquals(MESSAGE, resp.getBody().getMessage());
+		assertEquals(PHONE_NUMBER, resp.getBody().getPhoneNumber());
+		assertEquals(validScheduleDate, resp.getBody().getScheduleDate());
+		assertEquals(SEND_TYPE_1, resp.getBody().getSendType());
+		assertEquals(1, resp.getBody().getId());
+		assertEquals(CommunicationScheduling.STATUS_AGENDADO, resp.getBody().getStatus().toString());
+		assertEquals(CommunicationScheduling.STATUS_DESCRIPTION_AGENDADO, resp.getBody().getStatusDescription());
+	}
+	
+	@DisplayName("Try getting a scheduling communication")
+	@Test
+	public void getCommunicationSchedulingNotFound() {
+		Long id = 1L;
+		
+		Mockito.when(communicationSchedulingDao.getById(id))
+		.thenReturn(Optional.empty());
+		
+		BusinessException be = assertThrows(
+				BusinessException.class,()->
+				communicationSchedulingService.get(String.valueOf(id), "xCorrelationID"));
+		
+		assertEquals(HttpStatus.NOT_FOUND, be.getStatus());
+		assertEquals(ResponseCodeValues.ID_NOT_FOUND, be.getInternalCode());
+	}	
+	
+	@DisplayName("Delete a scheduling communication")
+	@Test
+	public void deleteCommunicationScheduling() throws NotFoundIdException {
+		Long id = 1L;
+
+		doNothing().when(communicationSchedulingDao).deleteById(id);
+
+		ResponseEntity<Void> resp = communicationSchedulingService.delete(String.valueOf(id), "xCorrelationID");
+		
+		verify(communicationSchedulingDao, times(1)).deleteById(id);
+		assertEquals(HttpStatus.NO_CONTENT, resp.getStatusCode());
+	}
+	
+	@DisplayName("Try deleting a scheduling communication not exists")
+	@Test
+	public void deleteCommunicationSchedulingNotExists() throws NotFoundIdException {
+		Long id = 1L;
+		
+		doThrow(NotFoundIdException.class).when(communicationSchedulingDao).deleteById(id);
+		
+		BusinessException be = assertThrows(BusinessException.class,()->communicationSchedulingService.delete(String.valueOf(id), "xCorrelationID"));
+		assertEquals(ResponseCodeValues.ID_NOT_FOUND, be.getInternalCode());
+		assertEquals(HttpStatus.NOT_FOUND, be.getStatus());
+		
+	}
+	
 	private CommunicationScheduling commonCommunicationScheduling(SchedulingCreationRequest req) {
 		CommunicationScheduling resp = new CommunicationScheduling();
 		resp.setEmail(req.getEmail());
@@ -105,7 +184,21 @@ public class CommunicationSchedulingServiceImplTest {
 		resp.setId(1L);
 		return resp;
 	}
-	
+
+	private Optional<CommunicationScheduling> commonCommunicationScheduling() {
+		CommunicationScheduling resp = new CommunicationScheduling();
+		resp.setEmail(EMAIL);
+		resp.setMessage(MESSAGE);
+		resp.setPhoneNumber(PHONE_NUMBER);
+		resp.setScheduleDate(scheduleDateTime);
+		resp.setSendType(SEND_TYPE_1);
+		resp.setCreationDate(currentLocalDateTime);
+		resp.setStatus(CommunicationScheduling.STATUS_AGENDADO);
+		resp.setStatusDescription(CommunicationScheduling.STATUS_DESCRIPTION_AGENDADO);
+		resp.setId(1L);
+		return Optional.of(resp);
+	}
+
 	private SchedulingCreationRequest commonSchedulingCreationRequest() {
 		SchedulingCreationRequest request = new SchedulingCreationRequest();
 		request.setEmail(EMAIL);

@@ -15,9 +15,9 @@ import com.desafio.scheduling.communication.exception.BusinessException;
 import com.desafio.scheduling.communication.exception.NotFoundIdException;
 import com.desafio.scheduling.communication.model.SchedulingCreationRequest;
 import com.desafio.scheduling.communication.model.SchedulingCreationResponse;
-import com.desafio.scheduling.communication.model.SchedulingDeleteResponse;
 import com.desafio.scheduling.communication.model.SchedulingStatusResponse;
 import com.desafio.scheduling.communication.service.CommunicationSchedulingService;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -47,12 +47,14 @@ public class CommunicationSchedulingServiceImpl implements CommunicationScheduli
 	}
 	
 	@Override
-	public ResponseEntity<SchedulingDeleteResponse> delete(String id, String xCorrelationID) {
+	public ResponseEntity<Void> delete(String id, String xCorrelationID) {
 		try {
 			communicationSchedulingDao.deleteById(Long.valueOf(id));
 		} catch (NotFoundIdException e) {
+			log.info("Nenhum agendamento encontrado para o id {}", id);
+			throw new BusinessException(ResponseCodeValues.ID_NOT_FOUND, HttpStatus.NOT_FOUND, "Nenhum agendamento encontrado");
 		}
-		return null;
+		return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 	}
 
 	@Override

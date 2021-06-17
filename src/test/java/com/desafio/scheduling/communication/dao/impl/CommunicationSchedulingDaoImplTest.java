@@ -17,7 +17,6 @@ import org.springframework.dao.DataAccessException;
 
 import com.desafio.scheduling.communication.dao.CommunicationSchedulingDao;
 import com.desafio.scheduling.communication.dao.domain.CommunicationScheduling;
-import com.desafio.scheduling.communication.dao.mock.DatabaseMockAutoConfiguration;
 import com.desafio.scheduling.communication.exception.NotFoundIdException;
 
 @SpringBootTest(classes = SpringBootH2Application.class)

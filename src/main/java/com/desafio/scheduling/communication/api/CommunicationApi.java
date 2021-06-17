@@ -8,7 +8,6 @@ package com.desafio.scheduling.communication.api;
 import com.desafio.scheduling.communication.model.ResponseError;
 import com.desafio.scheduling.communication.model.SchedulingCreationRequest;
 import com.desafio.scheduling.communication.model.SchedulingCreationResponse;
-import com.desafio.scheduling.communication.model.SchedulingDeleteResponse;
 import com.desafio.scheduling.communication.model.SchedulingStatusResponse;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
@@ -25,16 +24,16 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-06-16T08:09:21.394-03:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-06-16T20:30:55.375-03:00")
 
 @Api(value = "communication", description = "the communication API")
 public interface CommunicationApi {
 
     CommunicationApiDelegate getDelegate();
 
-    @ApiOperation(value = "Cancela agendamento por id", nickname = "communicationIdDelete", notes = "Responsável por cancelar o agendamento através do id. Observação: agendamento só é cancelado caso não tenha sido enviado ainda", response = SchedulingDeleteResponse.class, tags={ "Agendamento de Comunicação", })
+    @ApiOperation(value = "Cancela agendamento por id", nickname = "communicationIdDelete", notes = "Responsável por cancelar o agendamento através do id. Observação: agendamento só é cancelado caso não tenha sido enviado ainda", tags={ "Agendamento de Comunicação", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Sucesso", response = SchedulingDeleteResponse.class),
+        @ApiResponse(code = 200, message = "Sucesso"),
         @ApiResponse(code = 400, message = "Bad Request", response = ResponseError.class),
         @ApiResponse(code = 403, message = "Forbidden", response = ResponseError.class),
         @ApiResponse(code = 404, message = "Not Found", response = ResponseError.class),
@@ -43,7 +42,7 @@ public interface CommunicationApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.DELETE)
-    default ResponseEntity<SchedulingDeleteResponse> communicationIdDelete(@ApiParam(value = "ID do agendamento",required=true) @PathVariable("id") Integer id,@ApiParam(value = "Transaction ID" ) @RequestHeader(value="X-Correlation-ID", required=false) String xCorrelationID) {
+    default ResponseEntity<Void> communicationIdDelete(@ApiParam(value = "ID do agendamento",required=true) @PathVariable("id") Integer id,@ApiParam(value = "Transaction ID" ) @RequestHeader(value="X-Correlation-ID", required=false) String xCorrelationID) {
         return getDelegate().communicationIdDelete(id, xCorrelationID);
     }
 
