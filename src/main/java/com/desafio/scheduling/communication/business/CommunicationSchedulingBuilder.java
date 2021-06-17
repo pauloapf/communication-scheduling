@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import com.desafio.scheduling.communication.dao.domain.CommunicationScheduling;
 import com.desafio.scheduling.communication.model.SchedulingCreationRequest;
 import com.desafio.scheduling.communication.model.SchedulingCreationResponse;
-import com.desafio.scheduling.communication.model.SchedulingCreationResponse.StatusEnum;
 import com.desafio.scheduling.communication.model.SchedulingStatusResponse;
 
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +54,7 @@ public class CommunicationSchedulingBuilder {
 		response.setPhoneNumber(communicationScheduling.getPhoneNumber());
 		response.setScheduleDate(communicationSchedulingRules.getScheduleLocalDateTimeToString(communicationScheduling.getScheduleDate()));
 		response.setSendType(communicationScheduling.getSendType());
-		response.setStatus(SchedulingCreationResponse.StatusEnum.fromValue(communicationScheduling.getStatus()));
+		response.setStatus(communicationScheduling.getStatus());
 		response.setStatusDescription(communicationScheduling.getStatusDescription());
 		return response;
 	}
@@ -69,7 +68,7 @@ public class CommunicationSchedulingBuilder {
 		response.setPhoneNumber(communicationScheduling.getPhoneNumber());
 		response.setScheduleDate(communicationSchedulingRules.getScheduleLocalDateTimeToString(communicationScheduling.getScheduleDate()));
 		response.setSendType(communicationScheduling.getSendType());
-		response.setStatus(SchedulingStatusResponse.StatusEnum.fromValue(communicationScheduling.getStatus()));
+		response.setStatus(communicationScheduling.getStatus());
 		response.setStatusDescription(communicationScheduling.getStatusDescription());
 		return response;
 	}

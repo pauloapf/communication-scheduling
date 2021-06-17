@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 
 import com.desafio.scheduling.communication.api.response.ResponseCodeValues;
 import com.desafio.scheduling.communication.exception.BusinessException;
-import com.desafio.scheduling.communication.model.SchedulingCreationRequest.SendTypeEnum;
+import com.desafio.scheduling.communication.model.SendTypeEnum;
 import com.desafio.scheduling.communication.util.Util;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,11 +44,11 @@ public class CommunicationSchedulingRules {
 		return scheduleDateTime;
 	}
 	
-	public void validateRecipientForSendType(String phoneNumber, String email, @NotNull SendTypeEnum sendType) {
-		if(SendTypeEnum._1==sendType && !StringUtils.hasText(email)) {
+	public void validateRecipientForSendType(String phoneNumber, String email, String sendType) {
+		if(SendTypeEnum.EMAIL==SendTypeEnum.fromValue(sendType) && !StringUtils.hasText(email)) {
 			throw new BusinessException(ResponseCodeValues.EMAIL_MANDATORY, HttpStatus.BAD_REQUEST, "Email obrigatorio para tipo de envio "+ sendType.toString());
 		}
-		if(SendTypeEnum._1!=sendType && !StringUtils.hasText(phoneNumber)) {
+		if(SendTypeEnum.EMAIL!=SendTypeEnum.fromValue(sendType) && !StringUtils.hasText(phoneNumber)) {
 			throw new BusinessException(ResponseCodeValues.PHONE_MANDATORY, HttpStatus.BAD_REQUEST, "Phone Number obrigatorio para tipo de envio "+ sendType.toString());
 		}
 	}

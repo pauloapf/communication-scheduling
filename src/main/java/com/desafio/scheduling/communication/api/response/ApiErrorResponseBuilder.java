@@ -22,7 +22,7 @@ public class ApiErrorResponseBuilder {
     	
         ResponseError error = new ResponseError();
         error.setTimestamp(System.currentTimeMillis());
-        error.setStatus(Integer.parseInt(status.toString()));
+        error.setStatus(status.value());
         error.setError(status.getReasonPhrase());
         error.setErrors(new ArrayList<>());
         error.setException(e.getClass().getSimpleName());

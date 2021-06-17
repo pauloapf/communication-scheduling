@@ -1,6 +1,18 @@
+logging:
+  file:
+    name: /appl/logs/desafio-communication-scheduling
+  level:
+    org:
+      apache:
+        commons:
+          httpclient: DEBUG  #Log das operações internas do cliente HTTP
+    com.desafio.scheduling.communication: TRACE
+
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb;MODE=MYSQL
     driverClasName: org.h2.Driver
     username: sa
     password: password
+  main:
+    allow-bean-definition-overriding: true

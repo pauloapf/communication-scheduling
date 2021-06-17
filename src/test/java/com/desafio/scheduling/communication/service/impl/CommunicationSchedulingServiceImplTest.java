@@ -33,9 +33,9 @@ import com.desafio.scheduling.communication.dao.domain.CommunicationScheduling;
 import com.desafio.scheduling.communication.exception.BusinessException;
 import com.desafio.scheduling.communication.exception.NotFoundIdException;
 import com.desafio.scheduling.communication.model.SchedulingCreationRequest;
-import com.desafio.scheduling.communication.model.SchedulingCreationRequest.SendTypeEnum;
 import com.desafio.scheduling.communication.model.SchedulingCreationResponse;
 import com.desafio.scheduling.communication.model.SchedulingStatusResponse;
+import com.desafio.scheduling.communication.model.SendTypeEnum;
 import com.desafio.scheduling.communication.service.CommunicationSchedulingService;
 import com.desafio.scheduling.communication.util.Util;
 
@@ -116,7 +116,7 @@ public class CommunicationSchedulingServiceImplTest {
 		Mockito.when(communicationSchedulingDao.getById(id))
 		.thenReturn(commonCommunicationScheduling());
 		
-		ResponseEntity<SchedulingStatusResponse> resp = communicationSchedulingService.get(String.valueOf(id), "xCorrelationID");
+		ResponseEntity<SchedulingStatusResponse> resp = communicationSchedulingService.get(id.intValue(), "xCorrelationID");
 		
 		assertEquals(HttpStatus.OK, resp.getStatusCode());
 		assertEquals(EMAIL, resp.getBody().getEmail());
@@ -139,7 +139,7 @@ public class CommunicationSchedulingServiceImplTest {
 		
 		BusinessException be = assertThrows(
 				BusinessException.class,()->
-				communicationSchedulingService.get(String.valueOf(id), "xCorrelationID"));
+				communicationSchedulingService.get(id.intValue(), "xCorrelationID"));
 		
 		assertEquals(HttpStatus.NOT_FOUND, be.getStatus());
 		assertEquals(ResponseCodeValues.ID_NOT_FOUND, be.getInternalCode());
@@ -152,7 +152,7 @@ public class CommunicationSchedulingServiceImplTest {
 
 		doNothing().when(communicationSchedulingDao).deleteById(id);
 
-		ResponseEntity<Void> resp = communicationSchedulingService.delete(String.valueOf(id), "xCorrelationID");
+		ResponseEntity<Void> resp = communicationSchedulingService.delete(id.intValue(), "xCorrelationID");
 		
 		verify(communicationSchedulingDao, times(1)).deleteById(id);
 		assertEquals(HttpStatus.NO_CONTENT, resp.getStatusCode());
@@ -165,7 +165,7 @@ public class CommunicationSchedulingServiceImplTest {
 		
 		doThrow(NotFoundIdException.class).when(communicationSchedulingDao).deleteById(id);
 		
-		BusinessException be = assertThrows(BusinessException.class,()->communicationSchedulingService.delete(String.valueOf(id), "xCorrelationID"));
+		BusinessException be = assertThrows(BusinessException.class,()->communicationSchedulingService.delete(id.intValue(), "xCorrelationID"));
 		assertEquals(ResponseCodeValues.ID_NOT_FOUND, be.getInternalCode());
 		assertEquals(HttpStatus.NOT_FOUND, be.getStatus());
 		
@@ -205,7 +205,7 @@ public class CommunicationSchedulingServiceImplTest {
 		request.setMessage(MESSAGE);
 		request.setPhoneNumber(PHONE_NUMBER);
 		request.setScheduleDate(validScheduleDate);
-		request.setSendType(SendTypeEnum._1);
+		request.setSendType(SendTypeEnum.EMAIL.toString());
 		return request;
 	}
 	

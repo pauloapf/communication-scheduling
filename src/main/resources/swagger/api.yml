@@ -146,11 +146,6 @@ definitions:
         type: string
         description: 'Forma de envio: 1- Email, 2-SMS, 3-Push e 4-WhatsApp'
         example: "1"
-        enum:
-          - '1'
-          - '2'
-          - '3'
-          - '4'
       message:
         type: string
         description: Mensagem que será enviada
@@ -186,10 +181,6 @@ definitions:
         type: string
         description: Status da comunicação. 1-Agendado, 2-Enviado com Sucesso, 3-Falha no envio
         example: "1"
-        enum:
-          - '1'
-          - '2'
-          - '3'
       statusDescription:
         type: string
         description: Descrição do status do envio
@@ -225,10 +216,6 @@ definitions:
         type: string
         description: Status da comunicação. 1-Agendado, 2-Enviado com Sucesso, 3-Falha no envio
         example: "1"
-        enum:
-          - '1'
-          - '2'
-          - '3'
       statusDescription:
         type: string
         description: Descrição do status do envio

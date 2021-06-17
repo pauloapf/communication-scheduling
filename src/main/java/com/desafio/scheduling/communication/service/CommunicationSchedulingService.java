@@ -10,8 +10,8 @@ public interface CommunicationSchedulingService {
 
 	public ResponseEntity<SchedulingCreationResponse> create(SchedulingCreationRequest request, String xCorrelationID);
 
-	public ResponseEntity<Void> delete(String id, String xCorrelationID);
+	public ResponseEntity<Void> delete(Integer id, String xCorrelationID);
 
-	public ResponseEntity<SchedulingStatusResponse> get(String id, String xCorrelationID);
+	public ResponseEntity<SchedulingStatusResponse> get(Integer id, String xCorrelationID);
 
 }

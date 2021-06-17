@@ -47,7 +47,7 @@ public class CommunicationSchedulingServiceImpl implements CommunicationScheduli
 	}
 	
 	@Override
-	public ResponseEntity<Void> delete(String id, String xCorrelationID) {
+	public ResponseEntity<Void> delete(Integer id, String xCorrelationID) {
 		try {
 			communicationSchedulingDao.deleteById(Long.valueOf(id));
 		} catch (NotFoundIdException e) {
@@ -58,7 +58,7 @@ public class CommunicationSchedulingServiceImpl implements CommunicationScheduli
 	}
 
 	@Override
-	public ResponseEntity<SchedulingStatusResponse> get(String id, String xCorrelationID) {
+	public ResponseEntity<SchedulingStatusResponse> get(Integer id, String xCorrelationID) {
 		Optional<CommunicationScheduling> communicationScheduling = communicationSchedulingDao.getById(Long.valueOf(id));
 		if(communicationScheduling.isPresent()) {
 	        return new ResponseEntity<>(communicationSchedulingBuilder.buildSchedulingStatusResponse(

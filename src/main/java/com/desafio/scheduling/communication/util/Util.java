@@ -23,7 +23,7 @@ public class Util {
 	private SimpleDateFormat dateFormat;
 	
 	public Util(
-			@Value("${format.date: yyyy-MM-dd'T'HH}") String dateFormat) {
+			@Value("${format.date:yyyy-MM-dd'T'HH}") String dateFormat) {
 		this.dateFormat = new SimpleDateFormat(dateFormat);
 		this.dateFormat.setLenient(false);
 	}

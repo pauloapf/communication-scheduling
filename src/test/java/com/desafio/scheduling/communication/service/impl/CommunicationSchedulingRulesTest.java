@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus;
 import com.desafio.scheduling.communication.api.response.ResponseCodeValues;
 import com.desafio.scheduling.communication.business.CommunicationSchedulingRules;
 import com.desafio.scheduling.communication.exception.BusinessException;
-import com.desafio.scheduling.communication.model.SchedulingCreationRequest.SendTypeEnum;
+import com.desafio.scheduling.communication.model.SendTypeEnum;
 import com.desafio.scheduling.communication.util.Util;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -69,8 +69,8 @@ public class CommunicationSchedulingRulesTest {
 		
 		String phoneNumber = null;
 		String email = "xx@xx.com.br";
-		SendTypeEnum sendType = SendTypeEnum._1;
-		communicationSchedulingRules.validateRecipientForSendType(phoneNumber, email, sendType);
+		SendTypeEnum sendType = SendTypeEnum.EMAIL;
+		communicationSchedulingRules.validateRecipientForSendType(phoneNumber, email, sendType.toString());
 	}
 	
 	@ParameterizedTest(name="Validando sendType {0}")
@@ -80,12 +80,12 @@ public class CommunicationSchedulingRulesTest {
 		String phoneNumber = null;
 		String email = null;
 		SendTypeEnum sendTypeValue = SendTypeEnum.fromValue(sendType);
-		if(SendTypeEnum._1==sendTypeValue) {
+		if(SendTypeEnum.EMAIL==sendTypeValue) {
 			email = "xx@xx.com.br";
 		}else {
 			phoneNumber = "1190000000";
 		}
-		communicationSchedulingRules.validateRecipientForSendType(phoneNumber, email, sendTypeValue);
+		communicationSchedulingRules.validateRecipientForSendType(phoneNumber, email, sendTypeValue.toString());
 	}
 
 	@ParameterizedTest(name="Invalidando sendType {0}")
@@ -96,11 +96,11 @@ public class CommunicationSchedulingRulesTest {
 		final String email = "xx";
 		BusinessException be = null;
 		SendTypeEnum sendTypeValue = SendTypeEnum.fromValue(sendType);
-		if(SendTypeEnum._1==sendTypeValue) {
-			be = assertThrows(BusinessException.class,()->communicationSchedulingRules.validateRecipientForSendType(phoneNumber, null, sendTypeValue));
+		if(SendTypeEnum.EMAIL==sendTypeValue) {
+			be = assertThrows(BusinessException.class,()->communicationSchedulingRules.validateRecipientForSendType(phoneNumber, null, sendTypeValue.toString()));
 			assertEquals(ResponseCodeValues.EMAIL_MANDATORY, be.getInternalCode());
 		}else {
-			be = assertThrows(BusinessException.class,()->communicationSchedulingRules.validateRecipientForSendType(null, email, sendTypeValue));
+			be = assertThrows(BusinessException.class,()->communicationSchedulingRules.validateRecipientForSendType(null, email, sendTypeValue.toString()));
 			assertEquals(ResponseCodeValues.PHONE_MANDATORY, be.getInternalCode());
 		}
 		assertEquals(HttpStatus.BAD_REQUEST, be.getStatus());

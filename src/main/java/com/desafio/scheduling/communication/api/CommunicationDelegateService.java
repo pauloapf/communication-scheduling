@@ -19,7 +19,7 @@ public class CommunicationDelegateService implements CommunicationApiDelegate{
 	@Autowired
 	private CommunicationSchedulingService communicationSchedulingService;
 	
-	public ResponseEntity<Void> communicationIdDelete(String id,
+	public ResponseEntity<Void> communicationIdDelete(Integer id,
 			String xCorrelationID) {
         log.info("API Request = {} with xCorrelationID {}", id, xCorrelationID);
         ResponseEntity<Void> response = communicationSchedulingService.delete(id,xCorrelationID);
@@ -27,7 +27,7 @@ public class CommunicationDelegateService implements CommunicationApiDelegate{
         return response;
 	}
 
-	public ResponseEntity<SchedulingStatusResponse> communicationIdGet(String id,
+	public ResponseEntity<SchedulingStatusResponse> communicationIdGet(Integer id,
 			String xCorrelationID) {
         log.info("API Request = {} with xCorrelationID {}", id, xCorrelationID);
         ResponseEntity<SchedulingStatusResponse> response = communicationSchedulingService.get(id,xCorrelationID);
