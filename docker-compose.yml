@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mysql:5.7
+    networks:
+      - communicationscheduling
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+  desafio-communication-scheduling:
+    build: ./
+    restart: on-failure
+    networks:
+      - communicationscheduling
+    environment:
+      MYSQL_HOST: 'communication-scheduling_db_1'
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    volumes:
+      - C:/appl/logs/:/appl/logs/      
+volumes:
+  my-db:
+networks:
+  communicationscheduling:
+    driver: bridge

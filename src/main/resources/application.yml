@@ -10,16 +10,9 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MYSQL
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/db
     driverClasName: org.h2.Driver
-    username: sa
+    username: user
     password: password
-    hikari:
-      minimum-idle: 5 
-      maximum-pool-size: 20 
-      idle-timeout: 30000
-      max-lifetime: 2000000
-      connection-timeout: 30000
-      pool-name: desafioPool
   main:
     allow-bean-definition-overriding: true

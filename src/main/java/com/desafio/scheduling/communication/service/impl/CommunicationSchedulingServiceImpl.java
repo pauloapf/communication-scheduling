@@ -43,16 +43,23 @@ public class CommunicationSchedulingServiceImpl implements CommunicationScheduli
 	
 	public ResponseEntity<SchedulingCreationResponse> create(SchedulingCreationRequest request, String xCorrelationID) {
 
+		if(log.isDebugEnabled()) {
+			log.debug("Executando serviço de CREATE para request {}", request);
+		}
 		CommunicationScheduling communicationScheduling = communicationSchedulingDao.create(
 				communicationSchedulingBuilder.createCommunication(request));
 		
-        return new ResponseEntity<>(communicationSchedulingBuilder.buildSchedulingCreationResponse(
-        		communicationScheduling), HttpStatus.CREATED);
+		SchedulingCreationResponse response = communicationSchedulingBuilder.buildSchedulingCreationResponse(
+        		communicationScheduling);
+		
+		log.debug("Executado serviço de CREATE");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 	
 	@Override
 	public ResponseEntity<Void> delete(Integer id, String xCorrelationID) {
 		try {
+			log.debug("Executando serviço de DELETE para id {}", id);
 			Optional<CommunicationScheduling> communicationScheduling = communicationSchedulingDao.getById(Long.valueOf(id));
 			if(communicationScheduling.isPresent()) {
 				if(communicationSchedulingRules.isCommunicationAvailableToBeDeleted(
@@ -69,18 +76,26 @@ public class CommunicationSchedulingServiceImpl implements CommunicationScheduli
 			log.info("Nenhum agendamento encontrado para o id {}", id);
 			throw new BusinessException(ResponseCodeValues.ID_NOT_FOUND, HttpStatus.NOT_FOUND, "Nenhum agendamento encontrado");
 		}
+		log.debug("Executado serviço de DELETE");
 		return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 	}
 
 	@Override
 	public ResponseEntity<SchedulingStatusResponse> get(Integer id, String xCorrelationID) {
+		log.debug("Executando serviço de GET para id {}", id);
+		SchedulingStatusResponse response = null;
+		
 		Optional<CommunicationScheduling> communicationScheduling = communicationSchedulingDao.getById(Long.valueOf(id));
+		
 		if(communicationScheduling.isPresent()) {
-	        return new ResponseEntity<>(communicationSchedulingBuilder.buildSchedulingStatusResponse(
-	        		communicationScheduling.get()), HttpStatus.OK);
+			response = communicationSchedulingBuilder.buildSchedulingStatusResponse(
+	        		communicationScheduling.get());
 		}else {
 			throw new BusinessException(ResponseCodeValues.ID_NOT_FOUND, HttpStatus.NOT_FOUND, "Nenhum agendamento encontrado para o id informado");
 		}
+		
+		log.debug("Executado serviço de GET");
+        return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }

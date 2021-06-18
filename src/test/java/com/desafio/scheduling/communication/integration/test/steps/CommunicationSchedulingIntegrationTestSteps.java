@@ -41,7 +41,7 @@ import cucumber.api.java.en.When;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = { 
 		"spring.profiles.active=dev",
-		"spring.application.name=desafio-communication-scheduling", })
+		"spring.application.name=desafio-communication-scheduling" })
 public class CommunicationSchedulingIntegrationTestSteps {
 
 	@LocalServerPort

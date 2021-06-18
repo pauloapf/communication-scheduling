@@ -1,0 +1,88 @@
+{
+	"info": {
+		"_postman_id": "d927c233-9a61-4ab8-8577-65d855157500",
+		"name": "desafio-communication-scheduling",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "communication",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"scheduleDate\":\"2030-06-13T17\",\r\n   \"phoneNumber\":\"11999999999\",\r\n   \"email\":\"xx@yy.com\",\r\n   \"sendType\":\"1\",\r\n   \"message\":\"Menagem de Agendamento de Comunicacao\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/communication/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"communication",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "communication",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/communication/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"communication",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "communication",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/communication/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"communication",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

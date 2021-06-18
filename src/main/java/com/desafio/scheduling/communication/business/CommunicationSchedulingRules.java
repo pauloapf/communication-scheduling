@@ -3,7 +3,6 @@ package com.desafio.scheduling.communication.business;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.desafio.scheduling.communication.api.response.ResponseCodeValues;
-import com.desafio.scheduling.communication.dao.domain.CommunicationScheduling;
 import com.desafio.scheduling.communication.exception.BusinessException;
 import com.desafio.scheduling.communication.model.SendTypeEnum;
 import com.desafio.scheduling.communication.model.StatusCommunicationEnum;

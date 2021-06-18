@@ -51,7 +51,6 @@ public class ApiExceptionHandler {
 		throw e;
 	}
 
-	//TODO
 	@ExceptionHandler({ ConstraintViolationException.class })
 	public ResponseEntity springExceptions(ConstraintViolationException e, HttpServletRequest request)
 			throws Exception {
